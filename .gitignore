@@ -22,6 +22,10 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-# Firebase Hosting
-.firebaserc
+### Firebase ###
+**/.firebaserc
 firebase-debug.log
+
+### Firebase Patch ###
+.runtimeconfig.json
+.firebase/
