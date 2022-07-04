@@ -1,30 +1,109 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+    <div id="app-container">
+        <div id="navbar-container">
+            <navbar />
+        </div>
+        <div id="content-container" class="container-fluid">
+            <div id="content" class="container bg-ccream1">
+                <loading-spinner v-if="loadingApp" />
+                <router-view />
+            </div>
+        </div>
+    </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import { watch, ref, provide } from 'vue';
+import { initFirebaseAuth } from '@/firebase';
+import { useNotes } from '@/composables/useNotes';
+import NavBar from '@/components/NavBar';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import store from "@/store";
 
-nav {
-  padding: 30px;
+export default {
+    components: {
+        'navbar': NavBar,
+        'loading-spinner': LoadingSpinner
+    },
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+    setup() {
+        const { getNotes, loadingNote } = useNotes();
+        const notes = ref([]);
+        const selectedNote = ref(null);
+        const loadingApp = ref(false);
 
-    &.router-link-exact-active {
-      color: #42b983;
+        provide('notes', notes);
+        provide('selectedNote', selectedNote);
+        provide('loadingApp', loadingApp);
+
+        const authStateObserver = async (user) => {
+            if (user) {
+                store.commit('setUserID', user.uid);
+                notes.value = await getNotes(user.uid);
+                if (notes.value.length > 0) {
+                    selectedNote.value = notes.value[0];
+                }
+            } else {
+                store.commit('setUserID', null);
+                notes.value = [];
+                selectedNote.value = null;
+            }
+        };
+
+        initFirebaseAuth(authStateObserver);
+
+        watch(loadingNote, (value) => {
+            loadingApp.value = value;
+        });
+
+        return { loadingApp };
+    },
+};
+</script>
+
+<style lang="scss" scoped>
+#app-container {
+    display: grid;
+    grid-template-rows: 56px 1fr;
+    #content-container {
+        overflow: auto;
+        max-height: calc(100vh - 70px);
+        #content {
+            overflow: inherit;
+            padding: 20px 12px;
+            min-height: calc(100vh - 70px);
+        }
     }
-  }
+    #content-container::-webkit-scrollbar,
+    #content::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+    #content-container::-webkit-scrollbar-track,
+    #content::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px #faedcd; 
+        border-radius: 10px;
+    }
+    #content-container::-webkit-scrollbar-thumb,
+    #content::-webkit-scrollbar-thumb {
+        background: #d4a373; 
+        border-radius: 10px;
+    }
+    #content-container::-webkit-scrollbar-thumb:hover,
+    #content::-webkit-scrollbar-thumb:hover {
+        background: #b68758; 
+    }
+}
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+    .container {
+        max-width: 690px !important;
+    }
+}
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+    .container {
+        max-width: 1200px !important;
+    }
 }
 </style>

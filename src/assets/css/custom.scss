@@ -1,0 +1,62 @@
+@import '../../../node_modules/bootstrap/scss/bootstrap.scss';
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.bgc-blue {
+    background-color: #2F78C0;
+}
+
+.bgc-blue:hover {
+    background-color: #ABC9E5;
+}
+
+.bgc-red {
+    background-color: #D65B5B;
+}
+
+.bgc-red:hover {
+    background-color: #EEBDBD;
+}
+
+.bgc-orange {
+    background-color: #FF9046;
+}
+
+.bgc-orange:hover {
+    background-color: #FFD2B5;
+}
+
+.bgc-brown {
+    background-color: #d4a373;
+}
+
+.bgc-brown:hover {
+    background-color: #faedcd;
+}
+
+.bgc-yellow {
+    background-color: #DABC32;
+}
+
+.bgc-yellow:hover {
+    background-color: #F0E4AD;
+}
+
+.bgc-green {
+    background-color: #ccd5ae;
+}
+
+.bgc-green:hover {
+    background-color: #e9edc9;
+}
+
+.bgc-purple {
+    background-color: #7E669F;
+}
+
+.bgc-purple:hover {
+    background-color: #CBC1D8;
+}
